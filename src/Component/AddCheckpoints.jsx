@@ -52,7 +52,7 @@ const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
             link.href = img;
             link.download = `${title}_QRCode.png`;
             link.click();
-          }}>Save QR Code</button>
+          }}>Download QR Code</button>
         </div>
       </div>
     </div>
