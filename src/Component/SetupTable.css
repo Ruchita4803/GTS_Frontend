@@ -1,0 +1,230 @@
+/* .main-container {
+  background-color: #263043;
+  color: #ffffff;
+  padding: 20px;
+}
+
+.Content {
+  background-color: #1c2733;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-container {
+  margin: 20px 0;
+}
+
+.icon-download {
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.Table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.Table th, .Table td {
+  padding: 12px;
+  border: 1px solid #ffffff;
+  text-align: left;
+}
+
+.Table th {
+  background-color: #3b4a5a;
+} */
+/* Button styling */
+button.Add {
+  background-color: #028823; 
+  color: white; 
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 20px; /* Some padding */
+  font-size: 16px; /* Larger text */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  margin-bottom: 20px; /* Space below the button */
+  display: block; /* Make the button a block element */
+  margin-left: auto; /* Center the button */
+  margin-right: none; /* Center the button */
+}
+
+/* Active state */
+button.Add:active {
+  background-color: #033b11; /* Even darker blue background on click */
+}
+
+/* Table and content styling */
+.Content {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1000px;
+  margin: 0px auto;
+  font-family: "Arial", sans-serif;
+  width:100%;
+}
+
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.Content h1 {
+  text-align: left;
+  margin-bottom: 0;
+  font-size: 2.5rem;
+  color: #333;
+  text-transform: uppercase;
+  font-weight: bold;
+  /* border-bottom: 3px solid #f0f0f0; */
+  padding-bottom: 10px;
+  flex: 1;
+}
+
+.icon-download {
+  display: block; /* Make the button a block element */
+  margin-left: auto; /* Center the button */
+  margin-right: 15px; 
+  font-size: 24px;
+  color: #263043;
+  cursor: pointer;
+ margin-bottom: 15px;
+
+}
+
+/* Table styling */
+.Table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.Table th,
+.Table td {
+  padding: 14px;
+  text-align: left;
+}
+
+.Table th {
+  background-color: #2d3e50;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.Table td {
+  background-color: #f9f9f9;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+}
+
+.Table tr:nth-child(even) td {
+  background-color: #d6d6d6;
+}
+
+.Table tr:hover td {
+  background-color: #e9e9e9;
+}
+
+.Table td:last-child {
+  text-align: center;
+}
+
+.Table th,
+.Table td {
+  border-right: 1px solid #ddd;
+}
+
+.Table th:last-child,
+.Table td:last-child {
+  border-right: none;
+}
+
+/* Icon styling */
+.icon {
+  font-size: 20px; /* Adjust the size of the icons */
+  margin-right: 10px; /* Space between icons */
+}
+
+.icon-trash {
+  color: red; /* Trash icon color */
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .Content {
+    padding: 15px;
+  }
+
+  .Content h1 {
+    font-size: 2rem;
+  }
+
+  .Table th,
+  .Table td {
+    padding: 12px;
+  }
+}
+
+/* Sort By CSS of Schedule page */
+.control-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.Sort {
+  display: flex;
+  align-items: center;
+}
+
+.Sort label {
+  margin-right: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.Sort select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/*Report filter*/
+
+.filter-download-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  color: #333;
+}
+
+.filter-container label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.filter-container select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
