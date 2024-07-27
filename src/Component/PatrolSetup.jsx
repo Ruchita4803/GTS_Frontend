@@ -1,135 +1,95 @@
-// import './SetupTable.css';
-// import { FaEdit } from 'react-icons/fa';
-// import { BsFillTrashFill } from 'react-icons/bs';
-
-// const PatrolSetup = () => {
-//     return (
-//         <main className="main-container">
-//         <div className="Content">
-//           <h1>PATROL SETUP</h1>
-//           <button className="Add">ADD</button>
-//           <table className="Table">
-//             <thead>
-//               <tr>
-//                 <th>Sr.No.</th>
-//                 <th>Patrol Title</th>
-//                 <th>Route ID</th>
-//                 <th>Start Time</th>
-//                 <th>End Time</th>
-//                 <th>Actions</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               <tr>
-//                 <td>1</td>
-//                 <td>Morning</td>
-//                 <td>R_01,R_02</td>
-//                 <td>8:00am</td>
-//                 <td>4:00pm</td>
-//                 <td>
-//                   <FaEdit className="icon" />
-//                   <BsFillTrashFill className="icon icon-trash" />
-//                 </td>
-//               </tr>
-//               <tr>
-//                 <td>2</td>
-//                 <td>Evening</td>
-//                 <td>R_03</td>
-//                 <td>4:00pm</td>
-//                 <td>12:00am</td>
-//                 <td>
-//                   <FaEdit className="icon" />
-//                   <BsFillTrashFill className="icon icon-trash" />
-//                 </td>
-//               </tr>
-//               <tr>
-//                 <td>3</td>
-//                 <td>Night</td>
-//                 <td>R_01,R_02,R_03</td>
-//                 <td>12:00am</td>
-//                 <td>8:00am</td>
-//                 <td>
-//                   <FaEdit className="icon" />
-//                   <BsFillTrashFill className="icon icon-trash" />
-//                 </td>
-//               </tr>
-//             </tbody>
-//           </table>
-//         </div>
-//       </main>
-//      );
-// }
-
-// export default PatrolSetup;
-
-import React, { useState } from "react";
-import "./SetupTable.css";
-import { FaEdit } from "react-icons/fa";
-import { BsFillTrashFill } from "react-icons/bs";
-import AddPatrol from "./AddPatrol";
+import React, { useState, useEffect } from 'react';
+import './SetupTable.css';
+import { FaEdit } from 'react-icons/fa';
+import axios from 'axios';
+import { BsFillTrashFill } from 'react-icons/bs';
+import AddPatrol from './AddPatrol';
 
 const PatrolSetup = () => {
-  const [patrols, setPatrols] = useState([
-    {
-      id: 1,
-      title: "A_Morning",
-      routeId: "R_01,R_02",
-      timeInterval: "2 hours",
-      startTime: "08:00 AM",
-      endTime: "04:00 PM",
-    },
-    {
-      id: 2,
-      title: "A_Evening",
-      routeId: "R_03",
-      timeInterval: "2 hours",
-      startTime: "04:00 PM",
-      endTime: "12:00 AM",
-    },
-    {
-      id: 3,
-      title: "A_Night",
-      routeId: "R_01,R_02,R_03",
-      timeInterval: "2 hours",
-      startTime: "12:00 AM",
-      endTime: "08:00 AM",
-    },
-    {
-      id: 4,
-      title: "B_Morning",
-      routeId: "R_04,R_05",
-      timeInterval: "2 hours",
-      startTime: "08:00 AM",
-      endTime: "04:00 PM",
-    },
-    {
-      id: 5,
-      title: "B_Evening",
-      routeId: "R_06",
-      timeInterval: "2 hours",
-      startTime: "04:00 PM",
-      endTime: "12:00 AM",
-    },
-    {
-      id: 6,
-      title: "B_Night",
-      routeId: "R_04,R_05,R_06",
-      timeInterval: "2 hours",
-      startTime: "12:00 AM",
-      endTime: "08:00 AM",
-    },
-  ]);
-
+  const [patrols, setPatrols] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedRouteId, setEditedRouteId] = useState('');
+  const [editedTimeInterval, setEditedTimeInterval] = useState('');
+  const [editedStartTime, setEditedStartTime] = useState('');
+  const [editedEndTime, setEditedEndTime] = useState('');
 
-  const addPatrolHandler = (patrol) => {
-    const formattedPatrol = {
-      ...patrol,
-      routeId: patrol.routes.join(","),
-      id: patrols.length + 1,
+  // Fetch data
+  useEffect(() => {
+    const fetchPatrols = async () => {
+      try {
+        const response = await axios.get('/api/patrols');
+        setPatrols(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
     };
-    setPatrols([...patrols, formattedPatrol]);
-    setShowAddForm(false);
+
+    fetchPatrols();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  // Add Patrol
+  const addPatrolHandler = async (patrol) => {
+    try {
+      const response = await axios.post('/api/patrols', patrol);
+      setPatrols([...patrols, response.data]);
+      setShowAddForm(false);
+    } catch (error) {
+      console.error("Error adding patrol:", error);
+    }
+  };
+
+  // Edit Patrol
+  const startEditingHandler = (patrol) => {
+    setEditingId(patrol.id);
+    setEditedTitle(patrol.title);
+    setEditedRouteId(patrol.routeId);
+    setEditedTimeInterval(patrol.timeInterval);
+    setEditedStartTime(patrol.startTime);
+    setEditedEndTime(patrol.endTime);
+  };
+
+  const saveEditHandler = async (id) => {
+    try {
+      await axios.put(`/api/patrols/${id}`, {
+        title: editedTitle,
+        routeId: editedRouteId,
+        timeInterval: editedTimeInterval,
+        startTime: editedStartTime,
+        endTime: editedEndTime
+      });
+
+      setPatrols(patrols.map((patrol) =>
+        patrol.id === id ? { ...patrol, title: editedTitle, routeId: editedRouteId, timeInterval: editedTimeInterval, startTime: editedStartTime, endTime: editedEndTime } : patrol
+      ));
+
+      setEditingId(null);
+    } catch (error) {
+      console.error("Error updating patrol:", error);
+    }
+  };
+
+  // Delete Patrol
+  const deletePatrolHandler = async (id) => {
+    try {
+      await axios.delete(`/api/patrols/${id}`);
+      setPatrols(patrols.filter((patrol) => patrol.id !== id));
+    } catch (error) {
+      console.error("Error deleting patrol:", error);
+    }
   };
 
   return (
@@ -137,15 +97,10 @@ const PatrolSetup = () => {
       <div className="Content">
         <h1>PATROL SETUP</h1>
         {showAddForm ? (
-          <AddPatrol
-            addPatrolHandler={addPatrolHandler}
-            closeForm={() => setShowAddForm(false)}
-          />
+          <AddPatrol addPatrolHandler={addPatrolHandler} closeForm={() => setShowAddForm(false)} />
         ) : (
           <>
-            <button className="Add" onClick={() => setShowAddForm(true)}>
-              ADD
-            </button>
+            <button className="Add" onClick={() => setShowAddForm(true)}>ADD</button>
             <table className="Table">
               <thead>
                 <tr>
@@ -162,14 +117,73 @@ const PatrolSetup = () => {
                 {patrols.map((patrol, index) => (
                   <tr key={patrol.id}>
                     <td>{index + 1}</td>
-                    <td>{patrol.title}</td>
-                    <td>{patrol.routeId}</td>
-                    <td>{patrol.timeInterval}</td>
-                    <td>{patrol.startTime}</td>
-                    <td>{patrol.endTime}</td>
                     <td>
-                      <FaEdit className="icon" />
-                      <BsFillTrashFill className="icon icon-trash" />
+                      {editingId === patrol.id ? (
+                        <input
+                          type="text"
+                          value={editedTitle}
+                          onChange={(e) => setEditedTitle(e.target.value)}
+                        />
+                      ) : (
+                        patrol.title
+                      )}
+                    </td>
+                    <td>
+                      {editingId === patrol.id ? (
+                        <input
+                          type="text"
+                          value={editedRouteId}
+                          onChange={(e) => setEditedRouteId(e.target.value)}
+                        />
+                      ) : (
+                        patrol.routeId
+                      )}
+                    </td>
+                    <td>
+                      {editingId === patrol.id ? (
+                        <input
+                          type="text"
+                          value={editedTimeInterval}
+                          onChange={(e) => setEditedTimeInterval(e.target.value)}
+                        />
+                      ) : (
+                        patrol.timeInterval
+                      )}
+                    </td>
+                    <td>
+                      {editingId === patrol.id ? (
+                        <input
+                          type="text"
+                          value={editedStartTime}
+                          onChange={(e) => setEditedStartTime(e.target.value)}
+                        />
+                      ) : (
+                        patrol.startTime
+                      )}
+                    </td>
+                    <td>
+                      {editingId === patrol.id ? (
+                        <input
+                          type="text"
+                          value={editedEndTime}
+                          onChange={(e) => setEditedEndTime(e.target.value)}
+                        />
+                      ) : (
+                        patrol.endTime
+                      )}
+                    </td>
+                    <td>
+                      {editingId === patrol.id ? (
+                        <>
+                          <button className="editsavebutton" onClick={() => saveEditHandler(patrol.id)}>Save</button>
+                          <button className="editcancelbutton" onClick={() => setEditingId(null)}>Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          <FaEdit className="icon" onClick={() => startEditingHandler(patrol)} />
+                          <BsFillTrashFill className="icon icon-trash" onClick={() => deletePatrolHandler(patrol.id)} />
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}

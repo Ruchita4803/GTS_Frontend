@@ -1,17 +1,49 @@
-import React, { useState } from 'react';
-import { FaTimes } from 'react-icons/fa';
-import QRCode from 'qrcode.react';
-import './AddForm.css';
+import React, { useState } from "react";
+import { FaTimes } from "react-icons/fa";
+import axios from "axios";
+import "./AddForm.css";
 
 const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [qrGenerated, setQrGenerated] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addCheckpointHandler({ title, description });
-    setTitle('');
-    setDescription('');
+    try {
+      const response = await axios.post("/api/checkpoints", {
+        title,
+        description,
+      });
+      if (response.data.success) {
+        addCheckpointHandler({ id: response.data.id, title, description });
+        setTitle("");
+        setDescription("");
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      alert("An error occurred while adding the checkpoint. Please try again.");
+    }
+  };
+
+  const handleGenerateQR = async () => {
+    try {
+      const response = await axios.post("/api/generate-qr", {
+        title,
+        description,
+      });
+      if (response.data.success) {
+        setQrGenerated(true);
+        alert("QR Code generated and saved successfully!");
+      } else {
+        alert("Failed to generate QR Code. Please try again.");
+      }
+    } catch (error) {
+      alert(
+        "An error occurred while generating the QR Code. Please try again."
+      );
+    }
   };
 
   return (
@@ -41,18 +73,18 @@ const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
               required
             ></textarea>
           </div>
-          <button type="submit" className="add-guard-button">Submit</button>
+          <button type="submit" className="add-guard-button">
+            Submit
+          </button>
         </form>
         <div className="qr-code-section">
-          <QRCode value={`${title} - ${description}`} size={150} />
-          <button className="add-guard-button" onClick={() => {
-            const canvas = document.querySelector('canvas');
-            const img = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.href = img;
-            link.download = `${title}_QRCode.png`;
-            link.click();
-          }}>Download QR Code</button>
+          <button
+            className="add-guard-button"
+            onClick={handleGenerateQR}
+            disabled={qrGenerated}
+          >
+            {qrGenerated ? "QR Code Generated" : "Generate QR"}
+          </button>
         </div>
       </div>
     </div>

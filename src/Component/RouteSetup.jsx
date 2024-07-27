@@ -1,30 +1,102 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './SetupTable.css';
 import { FaEdit } from 'react-icons/fa';
+import axios from 'axios';
 import { BsFillTrashFill } from 'react-icons/bs';
 import AddRoute from './AddRoute';
 
 const RouteSetup = () => {
-  const [routes, setRoutes] = useState([
-    { id: 1, routeId: 'R_01', checkpoints: 'Entry Gate-BuildingA-ClubHouse-Gym' },
-    { id: 2, routeId: 'R_02', checkpoints: 'PlayArea1-ClubHouse-Gym-Entry Gate' },
-    { id: 3, routeId: 'R_03', checkpoints: 'Entry Gate-PlayArea1-BuildingA' },
-    { id: 4, routeId: 'R_04', checkpoints: 'BuildingB-PlayArea2-Exit Gate' },
-    { id: 5, routeId: 'R_05', checkpoints: 'BuildingB-PlayArea2-SwimmimgPool' },
-    { id: 6, routeId: 'R_06', checkpoints: 'BuildingB-PlayArea2-SwimmimgPool-Exit Gate' },
-  ]);
-
+  const [routes, setRoutes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editedRouteId, setEditedRouteId] = useState('');
+  const [editedCheckpoints, setEditedCheckpoints] = useState('');
 
-  const addRouteHandler = (route) => {
-    const formattedRoute = {
-      ...route,
-      checkpoints: route.checkpoints.join('-'), // Join checkpoints with a dash
-      id: routes.length + 1
+
+  //Fetch routes
+  useEffect(() => {
+    const fetchRoutes = async () => {
+      try {
+        const response = await axios.get('/api/routes');
+        setRoutes(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
     };
-    setRoutes([...routes, formattedRoute]);
-    setShowAddForm(false);
+    fetchRoutes();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+
+  //Add routes
+  const addRouteHandler = async (route) => {
+    try {
+      const response = await axios.post('/api/add-route', route);
+      if (response.data.success) {
+        setRoutes([...routes, response.data.data]);
+        setShowAddForm(false);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      alert('Failed to add route. Please try again.');
+    }
+  };
+
+
+
+  //edit routes
+  
+  const startEditingHandler = (route) => {
+    setEditingId(route.id);
+    setEditedRouteId(route.routeId);
+    setEditedCheckpoints(route.checkpoints);
+  };
+  
+  const saveEditHandler = async (id) => {
+    try {
+      const response = await axios.put('/api/update-route', {
+        routeId: id,
+        newRouteName: editedRouteId,
+        newcheckPointNames: editedCheckpoints,
+      });
+      if (response.data.success) {
+        setRoutes(routes.map((route) =>
+          route.id === id ? { ...route, routeId: editedRouteId, checkpoints: editedCheckpoints } : route
+        ));
+        setEditingId(null);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      alert('Failed to update route. Please try again.');
+    }
+  };
+
+
+  //delete routes
+  const deleteRouteHandler = async (routeId) => {
+    try {
+      const response = await axios.delete('/api/delete-route', { data: { routeId } });
+      if (response.data.success) {
+        setRoutes(routes.filter(route => route.id !== routeId));
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      alert('Failed to delete route. Please try again.');
+    }
   };
 
   return (
@@ -49,11 +121,40 @@ const RouteSetup = () => {
                 {routes.map((route, index) => (
                   <tr key={route.id}>
                     <td>{index + 1}</td>
-                    <td>{route.routeId}</td>
-                    <td>{route.checkpoints}</td>
                     <td>
-                      <FaEdit className="icon" />
-                      <BsFillTrashFill className="icon icon-trash" />
+                      {editingId === route.id ? (
+                        <input
+                          type="text"
+                          value={editedRouteId}
+                          onChange={(e) => setEditedRouteId(e.target.value)}
+                        />
+                      ) : (
+                        route.routeId
+                      )}
+                    </td>
+                    <td>
+                      {editingId === route.id ? (
+                        <input
+                          type="text"
+                          value={editedCheckpoints}
+                          onChange={(e) => setEditedCheckpoints(e.target.value)}
+                        />
+                      ) : (
+                        route.checkpoints
+                      )}
+                    </td>
+                    <td>
+                      {editingId === route.id ? (
+                        <>
+                          <button className="editsavebutton" onClick={() => saveEditHandler(route.id)}>Save</button>
+                          <button className="editcancelbutton" onClick={() => setEditingId(null)}>Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          <FaEdit className="icon" onClick={() => startEditingHandler(route)} />
+                          <BsFillTrashFill className="icon icon-trash" onClick={() => deleteRouteHandler(route.id)} />
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -67,4 +168,3 @@ const RouteSetup = () => {
 };
 
 export default RouteSetup;
-

@@ -15,9 +15,10 @@ const AddRoute = ({ addRouteHandler, closeForm }) => {
     'PlayArea2',
   ];
 
-  const handleSubmit = (e) => {
+  //Send data to RouteSetup Component
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addRouteHandler({ routeId, checkpoints: selectedCheckpoints });
+    await addRouteHandler({ routeId, checkPointNames: selectedCheckpoints });
     setRouteId('');
     setSelectedCheckpoints([]);
   };

@@ -4,23 +4,27 @@ import './AddForm.css';
 
 const AddPatrol = ({ addPatrolHandler, closeForm }) => {
   const [title, setTitle] = useState('');
-  const [timeInterval, setTimeInterval]=useState('');
+  const [timeInterval, setTimeInterval] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [selectedRoutes, setSelectedRoutes] = useState([]);
-  
+
   const routes = ['R_01', 'R_02', 'R_03'];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedStartTime = formatTime(startTime);
-    const formattedEndTime = formatTime(endTime);
-    addPatrolHandler({ title, timeInterval, startTime: formattedStartTime, endTime: formattedEndTime, routes: selectedRoutes });
-    setTitle('');
-    setTimeInterval('');
-    setStartTime('');
-    setEndTime('');
-    setSelectedRoutes([]);
+    try {
+      const formattedStartTime = formatTime(startTime);
+      const formattedEndTime = formatTime(endTime);
+      await addPatrolHandler({ title, timeInterval, startTime: formattedStartTime, endTime: formattedEndTime, routes: selectedRoutes });
+      setTitle('');
+      setTimeInterval('');
+      setStartTime('');
+      setEndTime('');
+      setSelectedRoutes([]);
+    } catch (error) {
+      console.error("Error adding patrol:", error);
+    }
   };
 
   const handleRouteChange = (route) => {
