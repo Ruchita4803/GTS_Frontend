@@ -1,38 +1,51 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './SetupTable.css';
 import { FaEdit } from 'react-icons/fa';
 import { BsFillTrashFill } from 'react-icons/bs';
+import axios from 'axios';
 import AddSchedule from './AddSchedule';
 
 const ScheduleSetup = () => {
-  const [schedules, setSchedules] = useState([
-    { id: 1, startDate: '2024-07-06', endDate: '2024-07-14', guardName: 'Daniel', patrolTitle: 'A_Morning' },
-    { id: 2, startDate: '2024-07-06', endDate: '2024-07-14', guardName: 'Emily', patrolTitle: 'A_Evening' },
-    { id: 3, startDate: '2024-07-06', endDate: '2024-07-14', guardName: 'John', patrolTitle: 'A_Night' },
-    { id: 4, startDate: '2024-07-06', endDate: '2024-07-14', guardName: 'Smith', patrolTitle: 'B_Morning' },
-    { id: 5, startDate: '2024-07-06', endDate: '2024-07-14', guardName: 'Denver', patrolTitle: 'B_Evening' },
-    { id: 6, startDate: '2024-07-06', endDate: '2024-07-14', guardName: 'Levis', patrolTitle: 'B_Night' },
-    { id: 7, startDate: '2024-07-15', endDate: '2024-07-30', guardName: 'John', patrolTitle: 'A_Morning' },
-    { id: 8, startDate: '2024-07-15', endDate: '2024-07-30', guardName: 'Daniel', patrolTitle: 'A_Evening' },
-    { id: 9, startDate: '2024-07-15', endDate: '2024-07-30', guardName: 'Emily', patrolTitle: 'A_Night' },
-    { id: 10, startDate: '2024-07-15', endDate: '2024-07-30', guardName: 'Levis', patrolTitle: 'B_Morning' },
-    { id: 11, startDate: '2024-07-15', endDate: '2024-07-30', guardName: 'Smith', patrolTitle: 'B_Evening' },
-    { id: 12, startDate: '2024-07-15', endDate: '2024-07-30', guardName: 'Denver', patrolTitle: 'B_Night' },
-  ]);
-
+  const [schedules, setSchedules] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [editedSchedule, setEditedSchedule] = useState({ startDate: '', endDate: '', guardName: '', patrolTitle: '' });
   const [sortCriterion, setSortCriterion] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const addScheduleHandler = (schedule) => {
-    const formattedSchedule = {
-      ...schedule,
-      id: schedules.length + 1
+  // Fetch data from backend
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      try {
+        const response = await axios.get('/api/schedules');
+        setSchedules(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
     };
-    setSchedules([...schedules, formattedSchedule]);
-    setShowAddForm(false);
+
+    fetchSchedules();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  const addScheduleHandler = async (schedule) => {
+    try {
+      const response = await axios.post('/api/schedules', schedule);
+      setSchedules([...schedules, response.data]);
+      setShowAddForm(false);
+    } catch (error) {
+      console.error("Error adding schedule:", error);
+    }
   };
 
   const startEditingHandler = (schedule) => {
@@ -40,13 +53,23 @@ const ScheduleSetup = () => {
     setEditedSchedule({ ...schedule });
   };
 
-  const saveEditHandler = (id) => {
-    setSchedules(schedules.map(schedule => schedule.id === id ? editedSchedule : schedule));
-    setEditingId(null);
+  const saveEditHandler = async (id) => {
+    try {
+      await axios.put(`/api/schedules/${id}`, editedSchedule);
+      setSchedules(schedules.map(schedule => schedule.id === id ? editedSchedule : schedule));
+      setEditingId(null);
+    } catch (error) {
+      console.error("Error updating schedule:", error);
+    }
   };
 
-  const deleteScheduleHandler = (id) => {
-    setSchedules(schedules.filter(schedule => schedule.id !== id));
+  const deleteScheduleHandler = async (id) => {
+    try {
+      await axios.delete(`/api/schedules/${id}`);
+      setSchedules(schedules.filter(schedule => schedule.id !== id));
+    } catch (error) {
+      console.error("Error deleting schedule:", error);
+    }
   };
 
   const handleSortChange = (e) => {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import './AddForm.css';
+import axios from 'axios';
 
 const AddSchedule = ({ addScheduleHandler, closeForm, patrolTitles }) => {
   const [guardName, setGuardName] = useState('');
@@ -8,13 +9,18 @@ const AddSchedule = ({ addScheduleHandler, closeForm, patrolTitles }) => {
   const [endDate, setEndDate] = useState('');
   const [selectedPatrolTitle, setSelectedPatrolTitle] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addScheduleHandler({ guardName, startDate, endDate, patrolTitle: selectedPatrolTitle });
-    setGuardName('');
-    setStartDate('');
-    setEndDate('');
-    setSelectedPatrolTitle('');
+    try {
+      const newSchedule = { guardName, startDate, endDate, patrolTitle: selectedPatrolTitle };
+      await addScheduleHandler(newSchedule);
+      setGuardName('');
+      setStartDate('');
+      setEndDate('');
+      setSelectedPatrolTitle('');
+    } catch (error) {
+      console.error("Error adding schedule:", error);
+    }
   };
 
   return (
@@ -55,24 +61,24 @@ const AddSchedule = ({ addScheduleHandler, closeForm, patrolTitles }) => {
           />
         </div>
         <div className="form-group">
-          <label>Patrol Title:</label>
-          {patrolTitles.map((title) => (
-            <div key={title}>
-              <input
-                type="radio"
-                id={title}
-                value={title}
-                checked={selectedPatrolTitle === title}
-                onChange={(e) => setSelectedPatrolTitle(e.target.value)}
-              />
-              <label htmlFor={title}>{title}</label>
-            </div>
-          ))}
+          <label htmlFor="patrolTitle">Patrol Title:</label>
+          <select
+            id="patrolTitle"
+            value={selectedPatrolTitle}
+            onChange={(e) => setSelectedPatrolTitle(e.target.value)}
+            required
+          >
+            <option value="">Select</option>
+            {patrolTitles.map((title, index) => (
+              <option key={index} value={title}>{title}</option>
+            ))}
+          </select>
         </div>
-        <button type="submit" className="add-guard-button">Submit</button>
+        <button type="submit" className="submit-btn">Submit</button>
       </form>
     </div>
   );
 };
 
 export default AddSchedule;
+

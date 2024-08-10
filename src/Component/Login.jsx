@@ -73,16 +73,32 @@ import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import { FaUserShield } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = ({ handleLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+ 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleLogin(); // Update authentication state
-    navigate('/'); // Navigate to the home page
+ 
+    try {
+      const response = await axios.post('https://your-api-endpoint.com/login', {
+        email,
+        password,
+      });
+      if (response.data.success) {
+        handleLogin();
+        navigate('/'); // Navigate to the home page
+      } else {
+        alert('Invalid email or password.');
+      }
+    } catch (error) {
+      alert('An error occurred while logging in.');
+    }
+    
   };
 
   return (

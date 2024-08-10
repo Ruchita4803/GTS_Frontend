@@ -91,6 +91,10 @@ button.Add:active {
   flex: 1;
 }
 
+.display-msg{
+  color:black;
+}
+
 .icon-download {
   display: block; /* Make the button a block element */
   margin-left: auto; /* Center the button */

@@ -15,7 +15,7 @@ const RouteSetup = () => {
   const [editedCheckpoints, setEditedCheckpoints] = useState('');
 
 
-  //Fetch routes
+  //Fetch routes 
   useEffect(() => {
     const fetchRoutes = async () => {
       try {
@@ -31,11 +31,11 @@ const RouteSetup = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className='display-msg'>Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className='display-msg'>Error: {error}</div>;
   }
 
 

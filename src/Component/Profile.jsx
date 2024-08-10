@@ -16,7 +16,7 @@ function Profile({ isOpen, onClose }) {
         );
         setUserProfile(response.data);
       } catch (error) {
-        console.error("Error fetching profile data:", error);
+        alert("Error fetching profile data:", error);
       }
     };
 

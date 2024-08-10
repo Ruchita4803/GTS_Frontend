@@ -31,8 +31,8 @@ const CheckpointSetup = () => {
     fetchCheckpoints();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div className='display-msg'>Loading...</div>;
+  if (error) return <div className='display-msg'>Error: {error}</div>;
 
 
   //Add Checkpoints

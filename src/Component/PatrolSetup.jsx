@@ -34,11 +34,11 @@ const PatrolSetup = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className='display-msg'>Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className='display-msg'>Error: {error}</div>;
   }
 
   // Add Patrol
