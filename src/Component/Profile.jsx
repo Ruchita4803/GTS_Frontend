@@ -30,6 +30,7 @@ function Profile({ isOpen, onClose }) {
   const handleSave = (updatedProfile) => {
     setUserProfile(updatedProfile);
     setIsEditing(false);
+    onClose(); //CLose profile after saving
   };
 
   if (!userProfile) {

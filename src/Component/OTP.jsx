@@ -78,6 +78,7 @@ const OTP = ({ handleOTP, userData }) => {
           navigate('/');
         } else {
           setError(signupResponse.data.message);
+          alert("Error occured with SignUp details!");
         }
       } else {
         setError(response.data.message);
@@ -94,7 +95,7 @@ const OTP = ({ handleOTP, userData }) => {
           <div className="logo">
             <FaShield className="icon-header" />
             PatrolMaster360
-          </div>
+          </div> 
           <h2>ENTER OTP</h2>
           <div className="form-group">
             <label htmlFor="otp">OTP:</label>

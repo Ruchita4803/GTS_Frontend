@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Header from "./Component/header";
@@ -16,23 +16,39 @@ import AbsentGuardReport from "./Component/AbsentGuardReport";
 import Login from "./Component/Login";
 import Signup from "./Component/SignUp";
 import OTP from "./Component/OTP";
+import LogOut from "./Component/LogOut";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const[isOTPSent, setIsOTPSent]=useState(false); //Track OTP status
+  const [isOTPSent, setIsOTPSent] = useState(false);
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
+
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
+    localStorage.setItem("authToken", "some-auth-token"); // Save token on login
+    
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem("authToken"); // Remove token on logout
   };
 
   const handleSignup = () => {
     setIsOTPSent(true);
   };
 
-  const handleOTP=()=>{
+  const handleOTP = () => {
     setIsAuthenticated(true);
-  }
+  };
 
   const OpenSidebar = () => {
     setOpenSidebarToggle(!openSidebarToggle);
@@ -43,7 +59,10 @@ function App() {
       {isAuthenticated ? (
         <div className="grid-container">
           <Header OpenSidebar={OpenSidebar} />
-          <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar} />
+          <Sidebar
+            openSidebarToggle={openSidebarToggle}
+            OpenSidebar={OpenSidebar}
+          />
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route path="/guardSetup" element={<GuardSetup />} />
@@ -53,20 +72,32 @@ function App() {
             <Route path="/scheduleSetup" element={<ScheduleSetup />} />
             <Route path="/insightlog" element={<Insightlog />} />
             <Route path="/incidentReport" element={<IncidentReport />} />
-            <Route path="/missedCheckpointReport" element={<MissedCheckpointReport />} />
+            <Route
+              path="/missedCheckpointReport"
+              element={<MissedCheckpointReport />}
+            />
             <Route path="/absentGuardReport" element={<AbsentGuardReport />} />
+            <Route
+              path="/logout"
+              element={<LogOut handleLogout={handleLogout} />}
+            />
           </Routes>
         </div>
       ) : (
         <Routes>
           <Route path="/login" element={<Login handleLogin={handleLogin} />} />
-          {!isOTPSent?(
-            <Route path="/signup" element={<Signup handleSignup={handleSignup}/>}/>
-          ):(
-            <Route path="/otp" element={<OTP handleOTP={handleOTP}/>}/>
+          {!isOTPSent ? (
+            <Route
+              path="/signup"
+              element={<Signup handleSignup={handleSignup} />}
+            />
+          ) : (
+            <Route path="/otp" element={<OTP handleOTP={handleOTP} />} />
           )}
-          
-          <Route path="*" element={<Navigate to={isOTPSent?"/otp":"/login"} />} />
+          <Route
+            path="*"
+            element={<Navigate to={isOTPSent ? "/otp" : "/login"} />}
+          />
         </Routes>
       )}
     </BrowserRouter>

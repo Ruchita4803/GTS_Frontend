@@ -78,67 +78,67 @@ import axios from 'axios';
 const Login = ({ handleLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
- 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
-    try {
-      const response = await axios.post('https://your-api-endpoint.com/login', {
-        email,
-        password,
-      });
-      if (response.data.success) {
-        handleLogin();
-        navigate('/'); // Navigate to the home page
-      } else {
-        alert('Invalid email or password.');
-      }
-    } catch (error) {
-      alert('An error occurred while logging in.');
-    }
     
+    handleLogin();
+    navigate('/');
+    // try {
+    //   const response = await axios.post('https://your-api-endpoint.com/login', {
+    //     email,
+    //     password,
+    //   });
+    //   if (response.data.success) {
+    //     // Save token to localStorage
+    //     localStorage.setItem('authToken', response.data.token);
+    //     handleLogin();
+    //     navigate('/');
+    //   } else {
+    //     alert('Invalid email or password.');
+    //   }
+    // } catch (error) {
+    //   alert('An error occurred while logging in.');
+    // }
   };
 
   return (
     <div className="login-body">
-      
-    <div className="login-container">
-    
-      <form className="login-form" onSubmit={handleSubmit}>
-      <div className="logo">
-          <FaUserShield className="icon_header" />
-          PatrolMaster360
-        </div>
-        <h2>Login</h2>
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="login-button">Login</button>
-        <div className="login-links">
-          <a href="/forgot-password" className="forgot-password">Forgot password?</a>
-          <Link to="/signup" className="signup">Don't have an account? Sign Up</Link>
-        </div>
-      </form>
-    </div>
+      <div className="login-container">
+        <form className="login-form" onSubmit={handleSubmit}>
+          <div className="logo">
+            <FaUserShield className="icon_header" />
+            PatrolMaster360
+          </div>
+          <h2>Login</h2>
+          <div className="form-group">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="login-button">Login</button>
+          <div className="login-links">
+            <a href="/forgot-password" className="forgot-password">Forgot password?</a>
+            <Link to="/signup" className="signup">Don't have an account? Sign Up</Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
