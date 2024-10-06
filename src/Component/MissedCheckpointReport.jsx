@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import './SetupTable.css';
 import { BiDownload } from "react-icons/bi";
 import axios from 'axios';
-
+import {Url} from "../Api/Url";
 
 function MissedCheckpointReport() {
   const [missedCheckpoints, setMissedCheckpoints] = useState([]);
@@ -12,7 +12,7 @@ function MissedCheckpointReport() {
   useEffect(() => {
     const fetchMissedCheckpoints = async () => {
       try {
-        const response = await axios.get('/api/missedcheckpoint');
+        const response = await axios.get(Url.missedcheckpointreport);
         setMissedCheckpoints(response.data);
       } catch (error) {
         console.error('Error fetching Missed Checkpoints:', error);

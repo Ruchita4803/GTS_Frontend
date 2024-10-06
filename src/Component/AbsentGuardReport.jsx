@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import './SetupTable.css';
 import { BiDownload } from "react-icons/bi";
 import axios from 'axios';
+import {Url} from "../Api/Url"
 function AbsentGuardReport() {
   const [absentGuards, setAbsentGuards] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState('');
@@ -9,7 +10,7 @@ function AbsentGuardReport() {
   useEffect(() => {
     const fetchAbsentGuards = async () => {
       try {
-        const response = await axios.get('/api/absentguardrepotr');
+        const response = await axios.get(Url.absentguardreport);
         setAbsentGuards(response.data);
       } catch (error) {
         console.error('Error fetching Absent Guard Report:', error);

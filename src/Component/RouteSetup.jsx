@@ -4,7 +4,7 @@ import { FaEdit } from 'react-icons/fa';
 import axios from 'axios';
 import { BsFillTrashFill } from 'react-icons/bs';
 import AddRoute from './AddRoute';
-
+import {Url} from "../Api/Url";
 const RouteSetup = () => {
   const [routes, setRoutes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,7 @@ const RouteSetup = () => {
   useEffect(() => {
     const fetchRoutes = async () => {
       try {
-        const response = await axios.get('/api/routes');
+        const response = await axios.get(Url.fetchroutes);
         setRoutes(response.data);
         setLoading(false);
       } catch (error) {
@@ -42,7 +42,7 @@ const RouteSetup = () => {
   //Add routes
   const addRouteHandler = async (route) => {
     try {
-      const response = await axios.post('/api/add-route', route);
+      const response = await axios.post(Url.addroutes, route);
       if (response.data.success) {
         setRoutes([...routes, response.data.data]);
         setShowAddForm(false);
@@ -54,10 +54,7 @@ const RouteSetup = () => {
     }
   };
 
-
-
   //edit routes
-  
   const startEditingHandler = (route) => {
     setEditingId(route.id);
     setEditedRouteId(route.routeId);
@@ -66,7 +63,7 @@ const RouteSetup = () => {
   
   const saveEditHandler = async (id) => {
     try {
-      const response = await axios.put('/api/update-route', {
+      const response = await axios.put(Url.editroutes, {
         routeId: id,
         newRouteName: editedRouteId,
         newcheckPointNames: editedCheckpoints,
@@ -88,7 +85,7 @@ const RouteSetup = () => {
   //delete routes
   const deleteRouteHandler = async (routeId) => {
     try {
-      const response = await axios.delete('/api/delete-route', { data: { routeId } });
+      const response = await axios.delete(Url.deleteroutes, { data: { routeId } });
       if (response.data.success) {
         setRoutes(routes.filter(route => route.id !== routeId));
       } else {

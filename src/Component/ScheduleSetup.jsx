@@ -4,20 +4,106 @@ import { FaEdit } from "react-icons/fa";
 import { BsFillTrashFill } from "react-icons/bs";
 import axios from "axios";
 import AddSchedule from "./AddSchedule";
-
+import { Url } from "../Api/Url";
 const ScheduleSetup = () => {
-  const [schedules, setSchedules] = useState([  { id: 1, startDate: '2024-07-06', endDate: '2024-07-14', firstName: 'Daniel', lastName:'Patil', patrolTitle: 'A_Morning' },
-    { id: 2, startDate: '2024-07-06', endDate: '2024-07-14', firstName: 'Emily',lastName:'Patil', patrolTitle: 'A_Evening' },
-    { id: 3, startDate: '2024-07-06', endDate: '2024-07-14', firstName: 'John',lastName:'Patil', patrolTitle: 'A_Night' },
-    { id: 4, startDate: '2024-07-06', endDate: '2024-07-14', firstName: 'Smith',lastName:'Patil', patrolTitle: 'B_Morning' },
-    { id: 5, startDate: '2024-07-06', endDate: '2024-07-14', firstName: 'Denver',lastName:'Patil', patrolTitle: 'B_Evening' },
-    { id: 6, startDate: '2024-07-06', endDate: '2024-07-14', firstName: 'Levis',lastName:'Patil', patrolTitle: 'B_Night' },
-    { id: 7, startDate: '2024-07-15', endDate: '2024-07-30', firstName: 'John',lastName:'Patil', patrolTitle: 'A_Morning' },
-    { id: 8, startDate: '2024-07-15', endDate: '2024-07-30', firstName: 'Daniel',lastName:'Patil', patrolTitle: 'A_Evening' },
-    { id: 9, startDate: '2024-07-15', endDate: '2024-07-30', firstName: 'Emily', lastName:'Patil',patrolTitle: 'A_Night' },
-    { id: 10, startDate: '2024-07-15', endDate: '2024-07-30', firstName: 'Levis',lastName:'Patil', patrolTitle: 'B_Morning' },
-    { id: 11, startDate: '2024-07-15', endDate: '2024-07-30', firstName: 'Smith',lastName:'Patil', patrolTitle: 'B_Evening' },
-    { id: 12, startDate: '2024-07-15', endDate: '2024-07-30', firstName: 'Denver', lastName:'Patil',patrolTitle: 'B_Night' },]);
+  const [schedules, setSchedules] = useState([
+    {
+      id: 1,
+      startDate: "2024-07-06",
+      endDate: "2024-07-14",
+      firstName: "Daniel",
+      lastName: "Patil",
+      patrolTitle: "A_Morning",
+    },
+    {
+      id: 2,
+      startDate: "2024-07-06",
+      endDate: "2024-07-14",
+      firstName: "Emily",
+      lastName: "Patil",
+      patrolTitle: "A_Evening",
+    },
+    {
+      id: 3,
+      startDate: "2024-07-06",
+      endDate: "2024-07-14",
+      firstName: "John",
+      lastName: "Patil",
+      patrolTitle: "A_Night",
+    },
+    {
+      id: 4,
+      startDate: "2024-07-06",
+      endDate: "2024-07-14",
+      firstName: "Smith",
+      lastName: "Patil",
+      patrolTitle: "B_Morning",
+    },
+    {
+      id: 5,
+      startDate: "2024-07-06",
+      endDate: "2024-07-14",
+      firstName: "Denver",
+      lastName: "Patil",
+      patrolTitle: "B_Evening",
+    },
+    {
+      id: 6,
+      startDate: "2024-07-06",
+      endDate: "2024-07-14",
+      firstName: "Levis",
+      lastName: "Patil",
+      patrolTitle: "B_Night",
+    },
+    {
+      id: 7,
+      startDate: "2024-07-15",
+      endDate: "2024-07-30",
+      firstName: "John",
+      lastName: "Patil",
+      patrolTitle: "A_Morning",
+    },
+    {
+      id: 8,
+      startDate: "2024-07-15",
+      endDate: "2024-07-30",
+      firstName: "Daniel",
+      lastName: "Patil",
+      patrolTitle: "A_Evening",
+    },
+    {
+      id: 9,
+      startDate: "2024-07-15",
+      endDate: "2024-07-30",
+      firstName: "Emily",
+      lastName: "Patil",
+      patrolTitle: "A_Night",
+    },
+    {
+      id: 10,
+      startDate: "2024-07-15",
+      endDate: "2024-07-30",
+      firstName: "Levis",
+      lastName: "Patil",
+      patrolTitle: "B_Morning",
+    },
+    {
+      id: 11,
+      startDate: "2024-07-15",
+      endDate: "2024-07-30",
+      firstName: "Smith",
+      lastName: "Patil",
+      patrolTitle: "B_Evening",
+    },
+    {
+      id: 12,
+      startDate: "2024-07-15",
+      endDate: "2024-07-30",
+      firstName: "Denver",
+      lastName: "Patil",
+      patrolTitle: "B_Night",
+    },
+  ]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [editedSchedule, setEditedSchedule] = useState({
@@ -35,7 +121,7 @@ const ScheduleSetup = () => {
   // useEffect(() => {
   //   const fetchSchedules = async () => {
   //     try {
-  //       const response = await axios.get("/api/schedules");
+  //       const response = await axios.get(Url.fetchschedules);
   //       const formattedSchedules = response.data.map((schedule) => ({
   //         ...schedule,
   //         firstName: schedule.guardName.split(" ")[0],
@@ -53,18 +139,16 @@ const ScheduleSetup = () => {
   // }, []);
 
   // if (loading) {
-  //   return <div className='display-msg'>Loading...</div>;
+  //   return <div className="display-msg">Loading...</div>;
   // }
 
-  // if (error) {
-  //   return <div className='display-msg'>Error: {error}</div>;
-  // }
-
-  
+  if (error) {
+    return <div className="display-msg">Error: {error}</div>;
+  }
 
   const addScheduleHandler = async (schedule) => {
     try {
-      const response = await axios.post("/api/schedules", schedule);
+      const response = await axios.post(Url.addschedules, schedule);
       const formattedSchedule = {
         ...response.data,
         firstName: response.data.guardName.split(" ")[0],
@@ -87,8 +171,9 @@ const ScheduleSetup = () => {
       const updatedSchedule = {
         ...editedSchedule,
         guardName: `${editedSchedule.firstName} ${editedSchedule.lastName}`,
+        scheduleId:id,
       };
-      await axios.put(`/api/schedules/${id}`, updatedSchedule);
+      await axios.put(Url.editschedules, updatedSchedule);
       setSchedules(
         schedules.map((schedule) =>
           schedule.id === id ? updatedSchedule : schedule
@@ -102,7 +187,7 @@ const ScheduleSetup = () => {
 
   const deleteScheduleHandler = async (id) => {
     try {
-      await axios.delete(`/api/schedules/${id}`);
+      await axios.delete(Url.deleteschedules);
       setSchedules(schedules.filter((schedule) => schedule.id !== id));
     } catch (error) {
       console.error("Error deleting schedule:", error);

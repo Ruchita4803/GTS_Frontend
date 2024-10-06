@@ -14,7 +14,7 @@ const AddRoute = ({ addRouteHandler, closeForm }) => {
     'PlayArea1',
     'PlayArea2',
   ];
-
+ 
   //Send data to RouteSetup Component
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ const AddRoute = ({ addRouteHandler, closeForm }) => {
   };
 
   return (
-    <div className="add-guard-container">
+    <div className="add-container">
       <div className="form-header">
         <h2>Add New Route</h2>
         <FaTimes className="close-icon" onClick={closeForm} />
@@ -63,7 +63,7 @@ const AddRoute = ({ addRouteHandler, closeForm }) => {
             </div>
           ))}
         </div>
-        <button type="submit" className="add-guard-button">
+        <button type="submit" className="add-button">
           Submit
         </button>
       </form>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import './AddForm.css';
-import axios from 'axios';
+
 
 const AddSchedule = ({ addScheduleHandler, closeForm, patrolTitles }) => {
   const [guardName, setGuardName] = useState('');
@@ -24,7 +24,7 @@ const AddSchedule = ({ addScheduleHandler, closeForm, patrolTitles }) => {
   };
 
   return (
-    <div className="add-guard-container">
+    <div className="add-container">
       <div className="form-header">
         <h2>Add New Schedule</h2>
         <FaTimes className="close-icon" onClick={closeForm} />

@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./SetupTable.css";
 import { BiDownload } from "react-icons/bi";
 import axios from 'axios';
+import {Url} from "../Api/Url";
 function InsightLog() {
   const [logs, setLogs] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState("");
-
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await axios.get("/api/insightlog");
+        const response = await axios.get(Url.insightlog);
         setLogs(response.data);
       } catch (error) {
         alert("Error fetching log", error);

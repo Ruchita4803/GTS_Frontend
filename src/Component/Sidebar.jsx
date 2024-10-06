@@ -4,7 +4,6 @@ import {
   BsFillArchiveFill,
   BsFillGrid3X3GapFill,
   BsPeopleFill,
- 
 } from "react-icons/bs";
 
 import { FaUserShield } from "react-icons/fa";
@@ -14,7 +13,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
   //Dropdown for Setup
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
- 
+
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
@@ -22,9 +21,6 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
 
   // Dropdown for Report
   const [showReportDropdown, setShowReportDropdown] = useState(false);
-
-
- 
 
   const toggleReportDropdown = () => {
     setShowReportDropdown(!showReportDropdown);
@@ -60,31 +56,30 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           {showDropdown && (
             <ul className="dropdown-menu">
               <li className="sidebar-list-item">
-                <Link to="/guardSetup">Guard</Link>
+                <Link to="/setup/guard">Guard</Link>
               </li>
               <li className="sidebar-list-item">
-                <Link to="/checkpointSetup">Checkpoints</Link>
+                <Link to="/setup/checkpoint">Checkpoints</Link>
               </li>
               <li className="sidebar-list-item">
-                <Link to="/routeSetup">Routes</Link>
+                <Link to="/setup/route">Routes</Link>
               </li>
               <li className="sidebar-list-item">
-                <Link to="/patrolSetup">Patrols</Link>
+                <Link to="/setup/patrol">Patrols</Link>
               </li>
-              
             </ul>
           )}
         </li>
         <li className="sidebar-list-item">
-          <Link to="/scheduleSetup">
+          <Link to="/schedule">
             <BsFillGrid3X3GapFill className="icon" />
             Schedule
           </Link>
         </li>
         <li className="sidebar-list-item">
-        <Link to="/insightlog">
+          <Link to="/insightlog">
             <BsPeopleFill className="icon" /> Insight Log
-            </Link>
+          </Link>
         </li>
         <li className="sidebar-list-item" onClick={toggleReportDropdown}>
           <div className="dropdown-toggle">
@@ -94,19 +89,17 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           {showReportDropdown && (
             <ul className="dropdown-menu">
               <li className="sidebar-list-item">
-              <Link to="/incidentReport">Incident </Link>
+                <Link to="/report/incident">Incident </Link>
               </li>
               <li className="sidebar-list-item">
-              <Link to="/absentGuardReport">Absent Guards</Link>
+                <Link to="/report/absentGuard">Absent Guards</Link>
               </li>
               <li className="sidebar-list-item">
-              <Link to="/missedCheckpointReport">Missed Checkpoints </Link>
+                <Link to="/report/missedCheckpoint">Missed Checkpoints </Link>
               </li>
             </ul>
           )}
         </li>
-
-      
       </ul>
       {selectedOption && (
         <div className="selected-option">You selected: {selectedOption}</div>

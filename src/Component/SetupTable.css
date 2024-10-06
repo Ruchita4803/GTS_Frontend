@@ -1,45 +1,4 @@
-/* .main-container {
-  background-color: #263043;
-  color: #ffffff;
-  padding: 20px;
-}
 
-.Content {
-  background-color: #1c2733;
-  padding: 20px;
-  border-radius: 8px;
-}
-
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.filter-container {
-  margin: 20px 0;
-}
-
-.icon-download {
-  cursor: pointer;
-  font-size: 24px;
-}
-
-.Table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.Table th, .Table td {
-  padding: 12px;
-  border: 1px solid #ffffff;
-  text-align: left;
-}
-
-.Table th {
-  background-color: #3b4a5a;
-} */
-/* Button styling */
 button.Add {
   background-color: #028823; 
   color: white; 

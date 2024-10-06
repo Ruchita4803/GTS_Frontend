@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import axios from "axios";
 import "./AddForm.css";
+import {Url} from "../Api/Url";
 
 const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
   const [title, setTitle] = useState("");
@@ -11,7 +12,7 @@ const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/checkpoints", {
+      const response = await axios.post(Url.addcheckpoints, {
         title,
         description,
       });
@@ -29,7 +30,7 @@ const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
 
   const handleGenerateQR = async () => {
     try {
-      const response = await axios.post("/api/generate-qr", {
+      const response = await axios.post(Url.generate_qr, {
         title,
         description,
       });
@@ -47,7 +48,7 @@ const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
   };
 
   return (
-    <div className="add-guard-container">
+    <div className="add-container">
       <div className="form-header">
         <h2>Add New Checkpoint</h2>
         <FaTimes className="close-icon" onClick={closeForm} />
@@ -73,13 +74,13 @@ const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
               required
             ></textarea>
           </div>
-          <button type="submit" className="add-guard-button">
+          <button type="submit" className="add-button">
             Submit
           </button>
         </form>
         <div className="qr-code-section">
           <button
-            className="add-guard-button"
+            className="add-button"
             onClick={handleGenerateQR}
             disabled={qrGenerated}
           >

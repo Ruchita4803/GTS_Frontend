@@ -1,21 +1,20 @@
-import React from 'react';
+import {React, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const LogOut = ({ handleLogout }) => {
+const LogOut = ( ) => {
   const navigate = useNavigate();
+   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleLogOutClick = () => {
-    // Remove the user's token from localStorage (or sessionStorage)
-    localStorage.removeItem('authToken');
-    handleLogout();
-
-    // Redirect to the login page
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem("authToken"); // Remove token on logout 
     navigate('/login');
   };
+  // };
 
   return (
     <div className="logout-container">
-      <div className="logout-button" onClick={handleLogOutClick}>Log Out</div>
+      <div className="logout-button" onClick={handleLogout}>Log Out</div>
     </div>
   );
 };

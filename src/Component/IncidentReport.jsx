@@ -4,7 +4,7 @@ import React, { useState,useEffect } from 'react';
 import './SetupTable.css';
 import { BiDownload } from "react-icons/bi";
 import axios from 'axios';
-
+import {Url} from "../Api/Url";
 
 function IncidentReport() {
   const [incidents, setIncidents] = useState([]);
@@ -14,7 +14,7 @@ function IncidentReport() {
   useEffect(()=>{
     const fetchIncidents= async()=>{
       try{
-        const response = await axios.get('/api/incidentreport');
+        const response = await axios.get(Url.incidentreport);
         setIncidents(response.data);
       }catch(error){
         alert('Error in fetching incident report', error);

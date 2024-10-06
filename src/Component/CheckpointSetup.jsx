@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './SetupTable.css';
 import { FaEdit } from 'react-icons/fa';
 import axios from 'axios';
+import {Url}from "../Api/Url"
 import { BsFillTrashFill } from 'react-icons/bs';
 import AddCheckpoints from './AddCheckpoints';
 
@@ -19,7 +20,7 @@ const CheckpointSetup = () => {
   useEffect(() => {
     const fetchCheckpoints = async () => {
       try {
-        const response = await axios.get('/api/checkpoints');
+        const response = await axios.get(Url.fetchcheckpoints);
         setCheckpoints(response.data);
         setLoading(false);
       } catch (error) {
@@ -50,7 +51,7 @@ const CheckpointSetup = () => {
 
   const saveEditHandler = async (id) => {
     try {
-      const response = await axios.put('/api/checkpoints', {
+      const response = await axios.put(Url.editcheckpoints, {
         checkpointId: id,
         checkpointName: editedTitle,
         description: editedDescription,
@@ -70,9 +71,11 @@ const CheckpointSetup = () => {
     }
   };
 
+
+  //delete Checkpoints
   const deleteCheckpointHandler = async (id) => {
     try {
-      const response = await axios.delete('/api/checkpoints', { data: { checkpointId: id } });
+      const response = await axios.delete( Url.deletecheckpoints, { data: { checkpointId: id } });
       if (response.data.success) {
         setCheckpoints(checkpoints.filter((checkpoint) => checkpoint.id !== id));
       } else {

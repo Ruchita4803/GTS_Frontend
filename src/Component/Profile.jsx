@@ -3,6 +3,7 @@ import "./Profile.css";
 import profilePhoto from "../profile_photo.png";
 import EditProfile from "./EditProfile";
 import axios from "axios";
+import { Url } from "../Api/Url";
 
 function Profile({ isOpen, onClose }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -11,9 +12,7 @@ function Profile({ isOpen, onClose }) {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(
-          "/api/profile"
-        );
+        const response = await axios.get(Url.profile);
         setUserProfile(response.data);
       } catch (error) {
         alert("Error fetching profile data:", error);
@@ -30,7 +29,7 @@ function Profile({ isOpen, onClose }) {
   const handleSave = (updatedProfile) => {
     setUserProfile(updatedProfile);
     setIsEditing(false);
-    onClose(); //CLose profile after saving
+    onClose(); //Close profile after saving
   };
 
   if (!userProfile) {

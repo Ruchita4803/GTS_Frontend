@@ -4,7 +4,7 @@ import { FaEdit } from 'react-icons/fa';
 import axios from 'axios';
 import { BsFillTrashFill } from 'react-icons/bs';
 import AddPatrol from './AddPatrol';
-
+import {Url} from "../Api/Url";
 const PatrolSetup = () => {
   const [patrols, setPatrols] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,7 @@ const PatrolSetup = () => {
   useEffect(() => {
     const fetchPatrols = async () => {
       try {
-        const response = await axios.get('/api/patrols');
+        const response = await axios.get(Url.fetchpatrols);
         setPatrols(response.data);
         setLoading(false);
       } catch (error) {
@@ -44,7 +44,7 @@ const PatrolSetup = () => {
   // Add Patrol
   const addPatrolHandler = async (patrol) => {
     try {
-      const response = await axios.post('/api/patrols', patrol);
+      const response = await axios.post(Url.addpatrols, patrol);
       setPatrols([...patrols, response.data]);
       setShowAddForm(false);
     } catch (error) {
@@ -64,7 +64,8 @@ const PatrolSetup = () => {
 
   const saveEditHandler = async (id) => {
     try {
-      await axios.put(`/api/patrols/${id}`, {
+      await axios.put(Url.editpatrols, {
+        patrolId:id,
         title: editedTitle,
         routeId: editedRouteId,
         timeInterval: editedTimeInterval,
@@ -85,7 +86,7 @@ const PatrolSetup = () => {
   // Delete Patrol
   const deletePatrolHandler = async (id) => {
     try {
-      await axios.delete(`/api/patrols/${id}`);
+      await axios.delete(Url.deletepatrols, {data:{patrolId:id}});
       setPatrols(patrols.filter((patrol) => patrol.id !== id));
     } catch (error) {
       console.error("Error deleting patrol:", error);

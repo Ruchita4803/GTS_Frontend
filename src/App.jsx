@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Header from "./Component/header";
-import Sidebar from "./Component/Sidebar";
-import Home from "./Component/Home";
+import { useState } from "react";
+import Home from "./pages/Home";
 import GuardSetup from "./Component/GuardSetup";
 import CheckpointSetup from "./Component/CheckpointSetup";
 import RouteSetup from "./Component/RouteSetup";
@@ -13,93 +11,58 @@ import Insightlog from "./Component/Insightlog";
 import IncidentReport from "./Component/IncidentReport";
 import MissedCheckpointReport from "./Component/MissedCheckpointReport";
 import AbsentGuardReport from "./Component/AbsentGuardReport";
-import Login from "./Component/Login";
-import Signup from "./Component/SignUp";
+import Login from "./pages/Login";
+import Signup from "./pages/SignUp";
 import OTP from "./Component/OTP";
 import LogOut from "./Component/LogOut";
+import Layout from "./pages/Layout";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isOTPSent, setIsOTPSent] = useState(false);
-  const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
-
-  // Check if user is authenticated on component mount
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-    localStorage.setItem("authToken", "some-auth-token"); // Save token on login
-    
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem("authToken"); // Remove token on logout
-  };
-
-  const handleSignup = () => {
+  const [isOTPSent, setIsOTPSent] = useState(false); // Track OTP status
+  const [userData, setUserData] = useState(null); // Store user data
+  
+  const handleSignup = (data) => {
+    setUserData(data);
     setIsOTPSent(true);
   };
 
   const handleOTP = () => {
     setIsAuthenticated(true);
+    setIsOTPSent(false);
+    setUserData(null);
   };
-
-  const OpenSidebar = () => {
-    setOpenSidebarToggle(!openSidebarToggle);
-  };
-
   return (
     <BrowserRouter>
-      {isAuthenticated ? (
-        <div className="grid-container">
-          <Header OpenSidebar={OpenSidebar} />
-          <Sidebar
-            openSidebarToggle={openSidebarToggle}
-            OpenSidebar={OpenSidebar}
-          />
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route path="/guardSetup" element={<GuardSetup />} />
-            <Route path="/checkpointSetup" element={<CheckpointSetup />} />
-            <Route path="/routeSetup" element={<RouteSetup />} />
-            <Route path="/patrolSetup" element={<PatrolSetup />} />
-            <Route path="/scheduleSetup" element={<ScheduleSetup />} />
-            <Route path="/insightlog" element={<Insightlog />} />
-            <Route path="/incidentReport" element={<IncidentReport />} />
-            <Route
-              path="/missedCheckpointReport"
-              element={<MissedCheckpointReport />}
-            />
-            <Route path="/absentGuardReport" element={<AbsentGuardReport />} />
-            <Route
-              path="/logout"
-              element={<LogOut handleLogout={handleLogout} />}
-            />
-          </Routes>
-        </div>
-      ) : (
-        <Routes>
-          <Route path="/login" element={<Login handleLogin={handleLogin} />} />
-          {!isOTPSent ? (
-            <Route
-              path="/signup"
-              element={<Signup handleSignup={handleSignup} />}
-            />
-          ) : (
-            <Route path="/otp" element={<OTP handleOTP={handleOTP} />} />
-          )}
+      <Routes>
+        <Route exact path="/login" element={<Login />} />
+        <Route exact path="/signup" element={<Signup handleSignup={handleSignup} />} />
+        <Route exact path="/otp" element={<OTP handleOTP={handleOTP} userData={userData}/>} />
+        <Route exact path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="/setup">
+            <Route path="guard" element={<GuardSetup />} />
+            <Route path="checkpoint" element={<CheckpointSetup />} />
+            <Route path="route" element={<RouteSetup />} />
+            <Route path="patrol" element={<PatrolSetup />} />
+           
+          </Route>
+          <Route path="/schedule" element={<ScheduleSetup />} />
+          <Route path="/insightlog" element={<Insightlog />} />
+
+          <Route path="/report">
+          <Route path="incident" element={<IncidentReport />} />
           <Route
-            path="*"
-            element={<Navigate to={isOTPSent ? "/otp" : "/login"} />}
+            path="missedCheckpoint"
+            element={<MissedCheckpointReport />}
           />
-        </Routes>
-      )}
+          <Route path="absentGuard" element={<AbsentGuardReport />} />
+          </Route>
+          
+        </Route>
+
+        <Route path="/logout" element={<LogOut />} />
+      </Routes>
     </BrowserRouter>
   );
 }

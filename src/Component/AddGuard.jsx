@@ -19,7 +19,7 @@ const AddGuard = ({ addGuardHandler, closeForm }) => {
   };
 
   return (
-    <div className="add-guard-container">
+    <div className="add-container">
       <div className="form-header">
         <h2>Add New Guard</h2>
         <FaTimes className="close-icon" onClick={closeForm} />
@@ -64,7 +64,7 @@ const AddGuard = ({ addGuardHandler, closeForm }) => {
             required
           ></textarea>
         </div>
-        <button type="submit" className="add-guard-button">Submit</button>
+        <button type="submit" className="add-button">Submit</button>
       </form>
     </div>
   );

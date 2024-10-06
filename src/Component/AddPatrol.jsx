@@ -36,7 +36,7 @@ const AddPatrol = ({ addPatrolHandler, closeForm }) => {
   };
 
   return (
-    <div className="add-guard-container">
+    <div className="add-container">
       <div className="form-header">
         <h2>Add New Patrol</h2>
         <FaTimes className="close-icon" onClick={closeForm} />
@@ -97,7 +97,7 @@ const AddPatrol = ({ addPatrolHandler, closeForm }) => {
             </div>
           ))}
         </div>
-        <button type="submit" className="add-guard-button">Submit</button>
+        <button type="submit" className="add-button">Submit</button>
       </form>
     </div>
   );

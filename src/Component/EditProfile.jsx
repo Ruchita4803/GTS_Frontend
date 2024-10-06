@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Profile.css";
 import profilePhoto from "../profile_photo.png";
 import axios from "axios";
+import {Url} from "../Api/Url";
 
 function EditProfile({ isOpen, onClose, userProfile, onSave }) {
   const [profile, setProfile] = useState(userProfile);
@@ -15,7 +16,7 @@ function EditProfile({ isOpen, onClose, userProfile, onSave }) {
     e.preventDefault();
     try {
       const response = await axios.put(
-        "api/profile",
+        Url.editprofile,
         profile
       );
       onSave(response.data);
