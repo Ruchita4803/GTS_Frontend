@@ -32,11 +32,20 @@ function Home() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(Url.statistics); // Adjust this endpoint to your backend API
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get(Url.statistics, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Data received from API:", response.data);
+
       const {
         totalGuards,
         totalCheckpoints,
         totalIncidents,
+        numberOfMissedCheckpoints,
         missedCheckpoints,
         guardPunctuality,
         incidentStatus,
@@ -45,11 +54,11 @@ function Home() {
       setTotalGuards(totalGuards || 0);
       setTotalCheckpoints(totalCheckpoints || 0);
       setTotalIncidents(totalIncidents || 0);
-      setMissedCheckpoints(missedCheckpoints || 0);
+      setMissedCheckpoints(numberOfMissedCheckpoints || 0);
       setGuardPunctualityData(guardPunctuality || []);
       setIncidentStatusData(incidentStatus || []);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data from API:", error);
     }
   };
 
@@ -93,17 +102,21 @@ function Home() {
       <div className="charts">
         <div className="chart-container">
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={guardPunctualityData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="guardName" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="count" fill="#8884d8" />
-            </BarChart>
+            {guardPunctualityData.length > 0 ? (
+              <BarChart
+                data={guardPunctualityData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="guardName" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="punctuality" fill="#8884d8" />
+              </BarChart>
+            ) : (
+              <p>No guard punctuality data available</p>
+            )}
           </ResponsiveContainer>
         </div>
 

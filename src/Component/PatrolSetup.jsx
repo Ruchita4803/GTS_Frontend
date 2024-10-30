@@ -21,7 +21,12 @@ const PatrolSetup = () => {
   useEffect(() => {
     const fetchPatrols = async () => {
       try {
-        const response = await axios.get(Url.fetchpatrols);
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(Url.fetchpatrols, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setPatrols(response.data);
         setLoading(false);
       } catch (error) {
@@ -116,21 +121,21 @@ const PatrolSetup = () => {
               </thead>
               <tbody>
                 {patrols.map((patrol, index) => (
-                  <tr key={patrol.id}>
+                  <tr key={patrol.patrolId}>
                     <td>{index + 1}</td>
                     <td>
-                      {editingId === patrol.id ? (
+                      {editingId === patrol.patrolId ? (
                         <input
                           type="text"
                           value={editedTitle}
                           onChange={(e) => setEditedTitle(e.target.value)}
                         />
                       ) : (
-                        patrol.title
+                        patrol.patrolName
                       )}
                     </td>
                     <td>
-                      {editingId === patrol.id ? (
+                      {editingId === patrol.patrolId ? (
                         <input
                           type="text"
                           value={editedRouteId}
@@ -141,7 +146,7 @@ const PatrolSetup = () => {
                       )}
                     </td>
                     <td>
-                      {editingId === patrol.id ? (
+                      {editingId === patrol.patrolId ? (
                         <input
                           type="text"
                           value={editedTimeInterval}
@@ -152,7 +157,7 @@ const PatrolSetup = () => {
                       )}
                     </td>
                     <td>
-                      {editingId === patrol.id ? (
+                      {editingId === patrol.patrolId ? (
                         <input
                           type="text"
                           value={editedStartTime}
@@ -163,7 +168,7 @@ const PatrolSetup = () => {
                       )}
                     </td>
                     <td>
-                      {editingId === patrol.id ? (
+                      {editingId === patrol.patrolId ? (
                         <input
                           type="text"
                           value={editedEndTime}
@@ -174,15 +179,15 @@ const PatrolSetup = () => {
                       )}
                     </td>
                     <td>
-                      {editingId === patrol.id ? (
+                      {editingId === patrol.patrolId ? (
                         <>
-                          <button className="editsavebutton" onClick={() => saveEditHandler(patrol.id)}>Save</button>
+                          <button className="editsavebutton" onClick={() => saveEditHandler(patrol.patrolId)}>Save</button>
                           <button className="editcancelbutton" onClick={() => setEditingId(null)}>Cancel</button>
                         </>
                       ) : (
                         <>
                           <FaEdit className="icon" onClick={() => startEditingHandler(patrol)} />
-                          <BsFillTrashFill className="icon icon-trash" onClick={() => deletePatrolHandler(patrol.id)} />
+                          <BsFillTrashFill className="icon icon-trash" onClick={() => deletePatrolHandler(patrol.patrolId)} />
                         </>
                       )}
                     </td>

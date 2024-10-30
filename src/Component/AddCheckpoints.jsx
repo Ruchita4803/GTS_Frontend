@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import axios from "axios";
 import "./AddForm.css";
-import {Url} from "../Api/Url";
+import { Url } from "../Api/Url";
 
 const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
   const [title, setTitle] = useState("");
@@ -12,10 +12,20 @@ const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(Url.addcheckpoints, {
-        title,
-        description,
-      });
+      const token = localStorage.getItem("authToken");
+      const response = await axios.post(
+        Url.addcheckpoints,
+        {
+          "checkpointName": title,
+          description,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       if (response.data.success) {
         addCheckpointHandler({ id: response.data.id, title, description });
         setTitle("");
@@ -30,10 +40,19 @@ const AddCheckpoints = ({ addCheckpointHandler, closeForm }) => {
 
   const handleGenerateQR = async () => {
     try {
-      const response = await axios.post(Url.generate_qr, {
-        title,
-        description,
-      });
+      const token = localStorage.getItem("authToken");
+      const response = await axios.post(
+        Url.generate_qr,
+        {
+          location: title, // Send only the location
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       if (response.data.success) {
         setQrGenerated(true);
         alert("QR Code generated and saved successfully!");

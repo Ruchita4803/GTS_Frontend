@@ -11,7 +11,12 @@ const GuardSetup = () => {
   useEffect(() => {
     const fetchGuards = async () => {
       try {
-        const response = await axios.get(Url.fetchguards); // Replace with your API endpoint
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(Url.fetchguards, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }); // Replace with your API endpoint
         setGuards(response.data);
         setLoading(false);
       } catch (error) {
@@ -50,7 +55,7 @@ const GuardSetup = () => {
               <tr key={guard.id}>
                 <td>{index + 1}</td>
                 <td>{`${guard.firstName} ${guard.lastName}`}</td>
-                <td>{guard.mobile}</td>
+                <td>{guard.contactNumber}</td>
                 <td>{guard.email}</td>
                 <td>{guard.address}</td>
               </tr>

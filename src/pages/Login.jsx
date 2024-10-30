@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../Component/Login.css";
 import { FaUserShield } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { login } from "../Api/Function";
+import { login } from "../Api/Function"; // Importing login function
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -12,12 +12,13 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // const nav = login(email, password);
-    // if (nav) navigate("/");
-    //direct login:
-      localStorage.setItem("authToken", "response.data.token");
-    const token = localStorage.getItem("authToken");
-    if (token) navigate("/");
+    // Calling login function
+    const isLoggedIn = await login(email, password);
+
+    if (isLoggedIn) {
+      // Redirect to the home page on successful login
+      navigate("/");
+    }
   };
 
   return (

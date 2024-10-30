@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import './AddForm.css';
 
 const AddRoute = ({ addRouteHandler, closeForm }) => {
   const [routeId, setRouteId] = useState('');
   const [selectedCheckpoints, setSelectedCheckpoints] = useState([]);
-
+  
   const checkpoints = [
     'Entry Gate',
     'ClubHouse',

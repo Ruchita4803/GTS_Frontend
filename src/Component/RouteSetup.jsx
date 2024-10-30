@@ -19,7 +19,12 @@ const RouteSetup = () => {
   useEffect(() => {
     const fetchRoutes = async () => {
       try {
-        const response = await axios.get(Url.fetchroutes);
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(Url.fetchroutes, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setRoutes(response.data);
         setLoading(false);
       } catch (error) {
@@ -56,21 +61,26 @@ const RouteSetup = () => {
 
   //edit routes
   const startEditingHandler = (route) => {
-    setEditingId(route.id);
+    setEditingId(route.routeId);
     setEditedRouteId(route.routeId);
     setEditedCheckpoints(route.checkpoints);
   };
   
   const saveEditHandler = async (id) => {
     try {
+      const token = localStorage.getItem("authToken");
       const response = await axios.put(Url.editroutes, {
         routeId: id,
         newRouteName: editedRouteId,
         newcheckPointNames: editedCheckpoints,
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       if (response.data.success) {
         setRoutes(routes.map((route) =>
-          route.id === id ? { ...route, routeId: editedRouteId, checkpoints: editedCheckpoints } : route
+          route.routeId === id ? { ...route, routeId: editedRouteId, checkpoints: editedCheckpoints } : route
         ));
         setEditingId(null);
       } else {
@@ -116,10 +126,10 @@ const RouteSetup = () => {
               </thead>
               <tbody>
                 {routes.map((route, index) => (
-                  <tr key={route.id}>
+                  <tr key={route.routeId}>
                     <td>{index + 1}</td>
                     <td>
-                      {editingId === route.id ? (
+                      {editingId === route.routeId ? (
                         <input
                           type="text"
                           value={editedRouteId}
@@ -130,26 +140,26 @@ const RouteSetup = () => {
                       )}
                     </td>
                     <td>
-                      {editingId === route.id ? (
+                      {editingId === route.routeId ? (
                         <input
                           type="text"
                           value={editedCheckpoints}
                           onChange={(e) => setEditedCheckpoints(e.target.value)}
                         />
                       ) : (
-                        route.checkpoints
+                        `${route.checkPointName}`
                       )}
                     </td>
                     <td>
-                      {editingId === route.id ? (
+                      {editingId === route.routeId ? (
                         <>
-                          <button className="editsavebutton" onClick={() => saveEditHandler(route.id)}>Save</button>
+                          <button className="editsavebutton" onClick={() => saveEditHandler(route.routeId)}>Save</button>
                           <button className="editcancelbutton" onClick={() => setEditingId(null)}>Cancel</button>
                         </>
                       ) : (
                         <>
                           <FaEdit className="icon" onClick={() => startEditingHandler(route)} />
-                          <BsFillTrashFill className="icon icon-trash" onClick={() => deleteRouteHandler(route.id)} />
+                          <BsFillTrashFill className="icon icon-trash" onClick={() => deleteRouteHandler(route.routeId)} />
                         </>
                       )}
                     </td>
