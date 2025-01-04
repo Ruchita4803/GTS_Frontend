@@ -4,7 +4,8 @@ import { FaEdit } from 'react-icons/fa';
 import axios from 'axios';
 import { BsFillTrashFill } from 'react-icons/bs';
 import AddPatrol from './AddPatrol';
-import {Url} from "../Api/Url";
+import { Url } from "../Api/Url";
+
 const PatrolSetup = () => {
   const [patrols, setPatrols] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,7 +14,7 @@ const PatrolSetup = () => {
   const [editingId, setEditingId] = useState(null);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedRouteId, setEditedRouteId] = useState('');
-  const [editedTimeInterval, setEditedTimeInterval] = useState('');
+  const [editedGuardName, setEditedGuardName] = useState('');
   const [editedStartTime, setEditedStartTime] = useState('');
   const [editedEndTime, setEditedEndTime] = useState('');
 
@@ -27,7 +28,12 @@ const PatrolSetup = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setPatrols(response.data);
+        // console.log(response.data)
+        if (Array.isArray(response.data)) {
+          setPatrols(response.data); // Setting the patrols array in the state
+        } else {
+          console.error('Expected an array of patrols, but got:', response.data);
+        }
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -50,7 +56,9 @@ const PatrolSetup = () => {
   const addPatrolHandler = async (patrol) => {
     try {
       const response = await axios.post(Url.addpatrols, patrol);
-      setPatrols([...patrols, response.data]);
+      if (response.data) {
+        setPatrols((prevPatrols) => [...prevPatrols, response.data]); // Add the new patrol to the state
+      }
       setShowAddForm(false);
     } catch (error) {
       console.error("Error adding patrol:", error);
@@ -59,44 +67,88 @@ const PatrolSetup = () => {
 
   // Edit Patrol
   const startEditingHandler = (patrol) => {
-    setEditingId(patrol.id);
-    setEditedTitle(patrol.title);
-    setEditedRouteId(patrol.routeId);
-    setEditedTimeInterval(patrol.timeInterval);
+    setEditingId(patrol.patrolId);
+    setEditedTitle(patrol.patrolName);
+    setEditedGuardName(patrol.guardName);
+    setEditedRouteId(patrol.routeIds.join(", ")); // Assuming routeIds are stored as an array
     setEditedStartTime(patrol.startTime);
     setEditedEndTime(patrol.endTime);
   };
 
   const saveEditHandler = async (id) => {
     try {
-      await axios.put(Url.editpatrols, {
-        patrolId:id,
-        title: editedTitle,
-        routeId: editedRouteId,
-        timeInterval: editedTimeInterval,
-        startTime: editedStartTime,
-        endTime: editedEndTime
-      });
-
-      setPatrols(patrols.map((patrol) =>
-        patrol.id === id ? { ...patrol, title: editedTitle, routeId: editedRouteId, timeInterval: editedTimeInterval, startTime: editedStartTime, endTime: editedEndTime } : patrol
-      ));
-
-      setEditingId(null);
+      const token = localStorage.getItem("authToken");
+      const response = await axios.put(
+        Url.editpatrols,
+        {
+          patrolId: id,
+          title: editedTitle,
+          routeIds: editedRouteId.split(',').map((id) => parseInt(id.trim(), 10)), // Convert to array of numbers
+          guardName: editedGuardName,
+          startTime: editedStartTime,
+          endTime: editedEndTime
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.data.success) {
+        setPatrols(
+          patrols.map((patrol) =>
+            patrol.patrolId === id
+              ? {
+                  ...patrol,
+                  patrolName: editedTitle,
+                  routeIds: editedRouteId.split(',').map((id) => parseInt(id.trim(), 10)),
+                  guardName: editedGuardName,
+                  startTime: editedStartTime,
+                  endTime: editedEndTime,
+                }
+              : patrol
+          )
+        );
+        setEditingId(null);
+      } else {
+        alert(response.data.message); // Show error message if something goes wrong
+      }
     } catch (error) {
       console.error("Error updating patrol:", error);
+      alert("An error occurred while updating the patrol. Please try again.");
     }
   };
+  
 
   // Delete Patrol
-  const deletePatrolHandler = async (id) => {
-    try {
-      await axios.delete(Url.deletepatrols, {data:{patrolId:id}});
-      setPatrols(patrols.filter((patrol) => patrol.id !== id));
-    } catch (error) {
-      console.error("Error deleting patrol:", error);
+  const deletePatrolHandler = async (patrolId) => {
+    if (window.confirm("Are you sure you want to delete this patrol?")) {
+      try {
+        // Send patrolId in the request body
+        const token = localStorage.getItem("authToken");
+        const response = await axios.delete(
+        Url.deletepatrols,
+        {
+          data: { patrolId: patrolId },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+        if (response.status === 200) {
+          // Update the state after successful deletion
+          setPatrols(patrols.filter((patrol) => patrol.patrolId !== patrolId));
+        } else {
+          console.error("Error deleting patrol: Unexpected status code", response.status);
+        }
+      } catch (error) {
+        console.error("Error deleting patrol:", error);
+      }
     }
   };
+  
 
   return (
     <main className="main-container">
@@ -112,8 +164,8 @@ const PatrolSetup = () => {
                 <tr>
                   <th>Sr.No.</th>
                   <th>Patrol Title</th>
-                  <th>Route ID</th>
-                  <th>Time Interval</th>
+                  <th>Guard Name</th> {/* New column for Guard Name */}
+                  <th>Route ID(s)</th>
                   <th>Start Time</th>
                   <th>End Time</th>
                   <th>Actions</th>
@@ -134,6 +186,19 @@ const PatrolSetup = () => {
                         patrol.patrolName
                       )}
                     </td>
+
+                    <td>
+                      {editingId === patrol.patrolId ? (
+                        <input
+                          type="text"
+                          value={editedGuardName} // Display the guard's name
+                          onChange={(e) => setEditedGuardName(e.target.value)} // Assuming you want to edit the title, not guard name
+                        />
+                      ) : (
+                        patrol.guardName // Assuming guardName is the field in your patrol object
+                      )}
+                    </td>
+
                     <td>
                       {editingId === patrol.patrolId ? (
                         <input
@@ -142,18 +207,7 @@ const PatrolSetup = () => {
                           onChange={(e) => setEditedRouteId(e.target.value)}
                         />
                       ) : (
-                        patrol.routeId
-                      )}
-                    </td>
-                    <td>
-                      {editingId === patrol.patrolId ? (
-                        <input
-                          type="text"
-                          value={editedTimeInterval}
-                          onChange={(e) => setEditedTimeInterval(e.target.value)}
-                        />
-                      ) : (
-                        patrol.timeInterval
+                        patrol.routeIds.join(", ") // Show all Route IDs as a comma-separated string
                       )}
                     </td>
                     <td>
